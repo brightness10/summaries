@@ -1,5 +1,7 @@
-# Event Management
+# Microservices
 
+## Services Communication
+Event based, when a service execute an operation that other services should know about it emits an event to a common event bus.
 #### Channels:
 The event is emitted to a specific channel, so that the event is sent only to whoever subscribed to that channel.
 #### Queue Group:
