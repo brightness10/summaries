@@ -15,23 +15,29 @@ There are three types of subdomains:
 
 ### Data Management
 The data structure is as such:
-- **Aggregate**:
-    - A collection of entities which is encapsulated in its own boundary.
-    - Always has a root entity that has a “part of” relationship with the sub entities, meaning that if the root entity is deleted the sub entities are destroyed.
-    - The aggregate is always changed by the root entity and never from outside of the aggregate boundary.
-- **Entities**:
-    - Are unique and have IDs, for example - each person is unique even if they share the exact same personal details.
-    - Consists of value objects, represents a real world object.
-    - Usually persisted as a row in DB.
-    - Typically mutable.
-    - Usually implements some BL.
 - **Value Objects**:
     - Are not unique - like a 10 dollars bill, you don’t care about a specific 10 dollars bill, all you care about is that it is a 10 dollars bill.
+    - Auto Validating upon creation.
     - Immutable.
-    - Rich Domain Logic.
-    - Auto Validating.
-    - Strong equality - can be compared.
-    - Typed with a non primitive.
+    - Implements comparison logic.
+    - Strong equality - if all properties are equal then the two value object are equal.
+    - Sometimes implements further BL.
+    - Typed with a non primitive, this enables other classes to be declarative regarding what should their properties contain.
+- **Entities**:
+    - Represents a real world object, for example a person.
+    - Are unique and have IDs, The ID is used for comparison - if two persons share the exact same personal details (name, address, etc.) that doesn't mean they are equal, on the contrary, user A4$e08 = user A4$e08 even if for some reason the personal details do not match. Other object should always reference the entity using its ID and shouldn't hold any other data on the entity but its ID.
+    - Consists of value objects, generally it is better to avoid primitive typing.
+    - Should be the first place that we think of to put BL.
+    - Usually persisted as a row in DB.
+    - A typical entity life cycle is created -> persisted -> n * (retrieved -> modified -> persisted) -> deleted.
+    - Typically mutable and are modified in response to some BL.
+- **Aggregate**:
+    - A collection of entities which is encapsulated in its own boundary.
+    - Is responsible for preventing business rules in the aggregate scope from being violated. for example it is a `message` aggregate responsibility to prevent a message from being liked after it was soft deleted.
+    - Always has a root entity that has a “part of” relationship with the sub entities, meaning that if the root entity is deleted the sub entities are destroyed.
+    - The aggregate is always changed by the root entity and never from outside of the aggregate boundary.
+
+
 
 
 * Factories - create aggregates.
